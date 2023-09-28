@@ -1,14 +1,17 @@
-const { promisify } = require('util');
-const parseString = promisify(require('xml2js').parseString);
-const axios = require('axios');
-const cheerio = require('cheerio');
-const { Command } = require('commander');
+const { promisify } = require("util");
+const parseString = promisify(require("xml2js").parseString);
+const axios = require("axios");
+const cheerio = require("cheerio");
+const { Command } = require("commander");
 
 const program = new Command();
 
 program
-  .requiredOption('--sitemap <url>', 'URL of the sitemap')
-  .requiredOption('--selector <selector>', 'CSS query selector to check for element existence');
+  .requiredOption("--sitemap <url>", "URL of the sitemap")
+  .requiredOption(
+    "--selector <selector>",
+    "CSS query selector to check for element existence"
+  );
 
 program.parse(process.argv);
 
@@ -46,18 +49,26 @@ async function parseSitemapIndexFromURL(sitemapIndexUrl, querySelector) {
               if (elementExists) {
                 results.push(url);
               }
-              console.log(`Processed page ${pageIndex + 1}/${results.length}: ${url}, Element Exists: ${elementExists}`);
+              console.log(
+                `Processed page ${pageIndex + 1}/${
+                  results.length
+                }: ${url}, Element Exists: ${elementExists}`
+              );
             }
           }
         }
       } catch (error) {
-        console.error('Error fetching or parsing linked sitemap:', error);
+        console.error("Error fetching or parsing linked sitemap:", error);
       }
     }
 
     // Process sitemap entries in the sitemap index
     if (parsedData.sitemapindex && parsedData.sitemapindex.sitemap) {
-      for (let pageIndex = 0; pageIndex < parsedData.sitemapindex.sitemap.length; pageIndex++) {
+      for (
+        let pageIndex = 0;
+        pageIndex < parsedData.sitemapindex.sitemap.length;
+        pageIndex++
+      ) {
         const entry = parsedData.sitemapindex.sitemap[pageIndex];
         await processSitemapEntry(entry, pageIndex);
       }
@@ -65,7 +76,7 @@ async function parseSitemapIndexFromURL(sitemapIndexUrl, querySelector) {
 
     return results;
   } catch (error) {
-    console.error('Error fetching or parsing sitemap index:', error);
+    console.error("Error fetching or parsing sitemap index:", error);
     throw error;
   }
 }
@@ -76,11 +87,11 @@ const querySelector = options.selector;
 
 parseSitemapIndexFromURL(sitemapIndexUrl, querySelector)
   .then((urls) => {
-    console.log('List of URLs that contain the element:');
+    console.log("List of URLs that contain the element:");
     urls.forEach((url, index) => {
       console.log(`${index + 1}: ${url}`);
     });
   })
   .catch((error) => {
-    console.error('An error occurred:', error);
+    console.error("An error occurred:", error);
   });
