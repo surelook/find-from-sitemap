@@ -81,7 +81,6 @@ async function parseSitemapIndexFromURL(sitemapIndexUrl, querySelector) {
   }
 }
 
-// Example usage
 const sitemapIndexUrl = options.sitemap;
 const querySelector = options.selector;
 
